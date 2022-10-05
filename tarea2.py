@@ -93,11 +93,48 @@ def ondulacion(num_cilindros, h_topo, R, h_corteza,
               porcentaje_raiz, rho_c, rho_m)
     n = -potencial / g0
     h_raiz = raiz(h_topo, porcentaje_raiz, rho_c, rho_m)
-    return [n, potencial, h_raiz]
+    return [n, h_raiz, potencial]
 
 
-final = ondulacion(20, 4000, 300000, 33000, 80)
-print('ondulacion = ' + str(final[0]) + ' metros.')
-print('potencial = ' + str(final[1]))
-print('raiz = ' + str(final[2]) + ' metros')
 # porcentaje de raiz entre 65% y 80% para ondulacion de 30-40 metros
+
+num_cilindros = 20
+h_topografica = 4000
+R = 300000
+H_corteza = 33000
+
+porcentajes = np.arange(0,100.1, 0.1)
+n = []
+h_raiz = []
+for i in porcentajes:
+    n_i = ondulacion(num_cilindros, h_topografica, R, H_corteza, i)[0]
+    h_i = ondulacion(num_cilindros, h_topografica, R, H_corteza, i)[1]
+    n.append(n_i)
+    h_raiz.append(h_i)
+
+
+fig1 = plt.figure(1)
+plt.plot(porcentajes, n)
+plt.axhline(30, color = 'r', linewidth=0.3)
+plt.axhline(40, color = 'r', linewidth=0.3)
+plt.axvline(66, color = 'r', linewidth=0.3)
+plt.axvline(79, color = 'r', linewidth=0.3)
+plt.title('Ondulación del geoide N en función del porcentaje de raiz isostática')
+plt.ylabel('N en metros')
+plt.xlabel('Porcentaje de raiz isostática')
+plt.savefig('graficos/grafico_n_vs_%.png')
+
+fig2 = plt.figure(2)
+plt.plot(porcentajes, h_raiz)
+plt.axvline(66, color = 'r', linewidth=0.3)
+plt.axvline(79, color = 'r', linewidth=0.3)
+plt.axhline(11880, color = 'r', linewidth=0.3)
+plt.axhline(14220, color = 'r', linewidth=0.3)
+
+plt.title('Profundidad de la raiz en función del porcentaje de raiz isostática')
+plt.ylabel('$H_{raiz}$ en metros')
+plt.xlabel('Porcentaje de raiz isostática')
+plt.savefig('graficos/grafico_raiz_vs_%.png')
+
+fig1.show()
+fig2.show()
