@@ -68,16 +68,36 @@ def U_montaña(num_cilindros, h_topo, R, h_corteza,
     :param porcentaje_raiz: porcentaje de raiz isostatica que se usa
     :return: potencial en el centro de la montaña
     """
+
+    delta_rho = rho_m - rho_c
     h = np.linspace(0, h_topo, num_cilindros + 1)
-    rad = radios(h, h_topo, R)
+    radi = radios(h, h_topo, R)
     h_raiz = raiz(h, porcentaje_raiz, rho_c, rho_m)
+    h1 = h_raiz + h_corteza
+    t_topo = h[1]
+    t_raiz = h_raiz[1]
+    u_raiz = U_cilindro(h1, radi, t_raiz, delta_rho)
+    u_raiz = np.delete(u_raiz, -1)
+    u_raiz = np.sum(u_raiz)
+    u_topo = U_cilindro(h, radi, t_topo, rho_c)
+    u_topo = np.delete(u_topo, -1)
+    u_topo = np.sum(u_topo)
+
+    u_total = - u_raiz + u_topo
+    return u_total
+
+def ondulacion(num_cilindros, h_topo, R, h_corteza,
+              porcentaje_raiz, rho_c = 2700, rho_m=3300, g0 = 9.8):
+
+    potencial = U_montaña(num_cilindros, h_topo, R, h_corteza,
+              porcentaje_raiz, rho_c, rho_m)
+    n = -potencial / g0
+    h_raiz = raiz(h_topo, porcentaje_raiz, rho_c, rho_m)
+    return [n, potencial, h_raiz]
 
 
-
-h = np.linspace(0, 5000, 5)
-radios = radios(h, 5000, 200000)
-h_raiz = raiz(h, 100)
-
-plt.plot(radios, h)
-plt.plot(radios, -h_raiz)
-plt.show()
+final = ondulacion(20, 4000, 300000, 33000, 80)
+print('ondulacion = ' + str(final[0]) + ' metros.')
+print('potencial = ' + str(final[1]))
+print('raiz = ' + str(final[2]) + ' metros')
+# porcentaje de raiz entre 65% y 80% para ondulacion de 30-40 metros
