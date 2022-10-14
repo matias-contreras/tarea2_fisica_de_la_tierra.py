@@ -88,7 +88,19 @@ def U_montaña(num_cilindros, h_topo, R, h_corteza,
 
 def ondulacion(num_cilindros, h_topo, R, h_corteza,
               porcentaje_raiz, rho_c = 2700, rho_m=3300, g0 = 9.8):
+    """
 
+    :param num_cilindros: cantidad de cilindros
+    :param h_topo: altura topográfica
+    :param R: radio de la base
+    :param h_corteza: espesor corteza
+    :param porcentaje_raiz: porcentaje de raiz isostática
+    :param rho_c: densidad corteza
+    :param rho_m: densidad manto
+    :param g0: aceleraacion de gravedad en la superficie
+    :return: entrega la ondulación del geoide, la profundidad de la raiz
+             y el potencial.
+    """
     potencial = U_montaña(num_cilindros, h_topo, R, h_corteza,
               porcentaje_raiz, rho_c, rho_m)
     n = -potencial / g0
